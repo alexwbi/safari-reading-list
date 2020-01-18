@@ -1,17 +1,17 @@
 import csv
+import os
 import plistlib
 import time
 
-BOOKMARKS_PATH = '~/Library/Safari/Bookmarks.plist'
+BOOKMARKS_PATH = os.path.join(os.getcwd(), 'Library/Safari/Bookmarks.plist')
 READING_LIST_KEY = 'com.apple.ReadingList'
-CSV_HEADING = ['Reading List (in reverse chronological order)']
+CSV_HEADING = 'Reading List (in reverse chronological order)'
 
 
-def reading_list_csv():
-    urls = get_reading_list_urls()
+def export_reading_list_csv():
     with open(f'reading_list_urls {time.ctime()}.csv', 'w') as f:
         writer = csv.writer(f)
-        writer.writerows(CSV_HEADING + urls)
+        writer.writerows([CSV_HEADING] + get_reading_list_urls())
 
 
 def get_reading_list_urls():
@@ -34,4 +34,4 @@ def _urls(reading_list):
 
 
 if __name__ == '__main__':
-    get_reading_list_urls()
+    export_reading_list_csv()
