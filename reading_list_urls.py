@@ -7,7 +7,7 @@ READING_LIST_KEY = 'com.apple.ReadingList'
 def get_reading_list_urls():
     bookmarks = _read_file()
     reading_list = _reading_list(bookmarks)
-    pass
+    return _urls(reading_list)
 
 
 def _read_file():
@@ -17,3 +17,11 @@ def _read_file():
 
 def _reading_list(bookmarks):
     return list(filter(lambda item: item['Title'] == READING_LIST_KEY, bookmarks['Children']))[0]
+
+
+def _urls(reading_list):
+    return [item['URLString'] for item in reading_list['Children']]
+
+
+if __name__ == 'main':
+    get_reading_list_urls()
