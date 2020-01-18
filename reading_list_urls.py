@@ -11,7 +11,9 @@ CSV_HEADING = 'Reading List (in reverse chronological order)'
 def export_reading_list_csv():
     with open(f'reading_list_urls {time.ctime()}.csv', 'w') as f:
         writer = csv.writer(f)
-        writer.writerows([CSV_HEADING] + get_reading_list_urls())
+        rows = [CSV_HEADING] + get_reading_list_urls()
+        for row in rows:
+            writer.writerow(row)
 
 
 def get_reading_list_urls():
