@@ -10,7 +10,7 @@ CSV_HEADING = 'Reading List (in reverse chronological order)'
 
 
 def export_reading_list_csv(base_dir):
-    with open(f'reading_list_urls {_timestamp()}.csv', 'w') as f:
+    with open(f'reading_list_urls_{_timestamp()}.csv', 'w') as f:
         writer = csv.writer(f)
         writer.writerow(CSV_HEADING)
         for url in get_reading_list_urls(base_dir):
@@ -42,5 +42,5 @@ def _urls(reading_list):
 
 
 if __name__ == '__main__':
-    base_dir = sys.argv[0]
+    base_dir = sys.argv[1]
     export_reading_list_csv(base_dir)
