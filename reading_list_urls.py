@@ -9,17 +9,21 @@ CSV_HEADING = 'Reading List (in reverse chronological order)'
 
 
 def export_reading_list_csv():
-    with open(f'reading_list_urls {time.ctime()}.csv', 'w') as f:
+    with open(f'reading_list_urls {_timestamp()}.csv', 'w') as f:
         writer = csv.writer(f)
-        rows = [CSV_HEADING] + get_reading_list_urls()
-        for row in rows:
-            writer.writerow(row)
+        writer.writerow(CSV_HEADING)
+        for url in get_reading_list_urls():
+            writer.writerow(url)
 
 
 def get_reading_list_urls():
     bookmarks = _read_file()
     reading_list = _reading_list(bookmarks)
     return _urls(reading_list)
+
+
+def _timestamp():
+    return time.ctime().replace(' ', '_')
 
 
 def _read_file():
