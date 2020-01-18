@@ -2,7 +2,7 @@ import csv
 import plistlib
 import time
 
-BOOKMARKS_PATH = 'Library/Safari/Bookmarks.plist'
+BOOKMARKS_PATH = '~/Library/Safari/Bookmarks.plist'
 READING_LIST_KEY = 'com.apple.ReadingList'
 CSV_HEADING = ['Reading List (in reverse chronological order)']
 
@@ -33,5 +33,5 @@ def _urls(reading_list):
     return [item['URLString'] for item in reading_list['Children']]
 
 
-if __name__ == 'main':
+if __name__ == '__main__':
     get_reading_list_urls()
