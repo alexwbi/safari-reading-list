@@ -31,15 +31,13 @@ class URLFetcher(object):
 
 class URLExporter(object):
 
-    CSV_HEADING = 'Reading List (in reverse chronological order)'
-
     def __init__(self, base_dir):
         self.urls = URLFetcher(base_dir).reading_list_urls()
 
     def export(self):
         with open(self._output_filename(), 'w') as f:
             writer = csv.writer(f, delimiter='\n')
-            writer.writerow([self.CSV_HEADING] + self.urls)
+            writer.writerow(self.urls)
 
     def _output_filename(self):
         return f'reading_list_urls_{self._timestamp()}.csv'
