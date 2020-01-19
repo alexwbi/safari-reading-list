@@ -10,41 +10,47 @@ class URLFetcher(object):
     BOOKMARKS_PATH_SUFFIX = 'Library/Safari/Bookmarks.plist'
     READING_LIST_KEY = 'com.apple.ReadingList'
 
+    def __init__(self, base_dir):
+        self.filepath = os.path.join(base_dir, self.BOOKMARKS_PATH_SUFFIX)
+
+    def reading_list_urls(self):
+        return [item['URLString'] for item in self._reading_list()]
+
+    def _reading_list(self):
+        reading_list = list(filter(self._is_reading_list, self._bookmarks()))
+        return reading_list[0]['Children']
+
+    def _is_reading_list(self, item):
+        return item['Title'] == self.READING_LIST_KEY
+
+    def _bookmarks(self):
+        with open(self.filepath, 'rb') as f:
+            bookmarks = plistlib.load(f)
+            return bookmarks['Children']
+
 
 class URLExporter(object):
 
     CSV_HEADING = 'Reading List (in reverse chronological order)'
 
     def __init__(self, base_dir):
-        self.filepath = os.path.join(base_dir, self.BOOKMARKS_PATH_SUFFIX)
+        self.urls = URLFetcher(base_dir).reading_list_urls()
 
-    def export_reading_list_csv(self):
-        with open(f'reading_list_urls_{_timestamp()}.csv', 'w') as f:
+    def export(self):
+        with open(self._output_filename(), 'w') as f:
             writer = csv.writer(f)
-            writer.writerow(CSV_HEADING)
-            for url in get_reading_list_urls(base_dir):
+            writer.writerow(self.CSV_HEADING)
+            for url in self.urls:
                 writer.writerow(url)
 
-    def get_reading_list_urls(base_dir):
-        bookmarks = _read_file(base_dir)
-        reading_list = _reading_list(bookmarks)
-        return _urls(reading_list)
+    def _output_filename(self):
+        return f'reading_list_urls_{self._timestamp()}.csv'
 
+    @staticmethod
     def _timestamp():
         return time.ctime().replace(' ', '_')
-
-    def _read_file(base_dir):
-        filepath = os.path.join(base_dir, BOOKMARKS_PATH_SUFFIX)
-        with open(filepath, 'rb') as f:
-            return plistlib.load(f)
-
-    def _reading_list(bookmarks):
-        return list(filter(lambda item: item['Title'] == READING_LIST_KEY, bookmarks['Children']))[0]
-
-    def _urls(reading_list):
-        return [item['URLString'] for item in reading_list['Children']]
 
 
 if __name__ == '__main__':
     base_dir = sys.argv[1]
-    export_reading_list_csv(base_dir)
+    URLExporter(base_dir).export()
