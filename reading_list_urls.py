@@ -38,10 +38,8 @@ class URLExporter(object):
 
     def export(self):
         with open(self._output_filename(), 'w') as f:
-            writer = csv.writer(f)
-            writer.writerow(self.CSV_HEADING)
-            for url in self.urls:
-                writer.writerow(url)
+            writer = csv.writer(f, delimiter='\n')
+            writer.writerow([self.CSV_HEADING] + self.urls)
 
     def _output_filename(self):
         return f'reading_list_urls_{self._timestamp()}.csv'
